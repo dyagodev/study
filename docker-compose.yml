@@ -1,0 +1,50 @@
+# v3 syntax
+version: "3"
+
+# Named volumes
+volumes:
+  # MySQL Data
+  study-mysql-data:
+    driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: mysql:5.7
+    container_name: study-mysql
+    volumes:
+      - study-mysql-data:/var/lib/mysql
+    ports:
+      - "3305:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=study
+      - MYSQL_DATABASE=study
+      - MYSQL_USER=study
+      - MYSQL_PASSWORD=study
+  # PHP (with Nginx)
+  app:
+    image: ambientum/php:8.0-nginx
+    container_name: study-app
+    depends_on:
+      - mysql
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "80:8080"
+    links:
+      - mysql
+  # PHPMYADMIN
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: study-phpmyadmin
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    ports:
+      - "8182:80"
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=study
+      - MYSQL_USER=study
+      - MYSQL_PASSWORD=study
