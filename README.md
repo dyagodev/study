@@ -1,8 +1,6 @@
 # Study API
 ## _API para transferencias monetária entre usuários_
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
-
 Study API permite enviar e receber dinheiro.
 
 - Sistema de Antifraud integrado
