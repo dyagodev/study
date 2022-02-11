@@ -1,6 +1,8 @@
 # Study API
 ## _API para transferencias monetária entre usuários_
 
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+
 Study API permite enviar e receber dinheiro.
 
 - Sistema de Antifraud integrado
@@ -59,7 +61,10 @@ yourdomain.com/api
 ```sh
 yourdomain.com/api/users/store
 ```
-Payload:
+##### Payload:
+#
+```sh
+
 {
 	"email": "teste2@picpay.com",
 	"name": "Usuário Teste 01",
@@ -68,6 +73,8 @@ Payload:
 	"cpf_cnpj": "11111111111",
 	"user_type": 1
 }
+```
+
 ** Todos os campos são obrigatórios
 > Nota: `user_type` 1 => Usuário Comum ou 2 => Lojistas.
 
@@ -77,13 +84,16 @@ Ao criar um usuário é automaticamente criado uma carteira virutal para o mesmo
 ```sh
 yourdomain.com/api/orders/store
 ```
-
-Payload:
+##### Payload:
+#
+```sh
 {
 	"amount": 10.00,
 	"payer": 1,
 	"payee": 2
 }
+```
+
 ** Todos os campos são obrigatórios
 > Nota: `payer` id do usuário pagador e `payee` id do usuário beneficiário
 
