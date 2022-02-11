@@ -1,4 +1,4 @@
-# Study API
+# StudyAPI
 ## _API para transferencias monetária entre usuários_
 
 Study API permite enviar e receber dinheiro.
@@ -22,7 +22,7 @@ StudyAPI usa vários projetos de código aberto para funcionar corretamente:
 - [PHP] - PHP é uma linguagem de script de uso geral popular que é especialmente adequada para desenvolvimento web.
 - [MySQL] - O MySQL é um sistema de gerenciamento de banco de dados, que utiliza a linguagem SQL como interface.
 
-E, claro, o próprio Suty API é de código aberto com um repositório público.
+E, claro, o próprio StudyAPI é de código aberto com um repositório público.
 
 ## Installation
 
