@@ -9,7 +9,7 @@ Study API permite enviar e receber dinheiro.
 
 ## Features
 
-- Envio de Dinheiro entre Usuários
+- Envio de Valores entre Usuários
 - Verificação de possíveis fraudes de transações
 - Notificação sobre transferencias recebidas
 - Validação de E-mail e CPF/CNPJ
