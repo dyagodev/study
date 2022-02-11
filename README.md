@@ -95,7 +95,7 @@ yourdomain.com/api/orders/store
 ** Todos os campos são obrigatórios
 > Nota: `payer` id do usuário pagador e `payee` id do usuário beneficiário
 
-Ao fazer envio de valor para um usuário, 
+Ao fazer envio de valores, 
 o usuário beneficiário recebe uma notificação 
 por email que é processado por uma [Fila](https://laravel.com/docs/8.x/queues).
 
