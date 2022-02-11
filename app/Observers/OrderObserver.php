@@ -3,7 +3,9 @@
 namespace App\Observers;
 
 use App\Models\Order;
+use App\Notifications\ReceivedTransfer;
 use App\Repositories\Interfaces\WalletRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class OrderObserver
 {
@@ -23,49 +25,10 @@ class OrderObserver
     public function created(Order $order)
     {
         $this->walletRepository->subtractBalance($order->amount, $order->payer_id);
-    }
-
-    /**
-     * Handle the Order "updated" event.
-     *
-     * @param  \App\Models\Order  $order
-     * @return void
-     */
-    public function updated(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Handle the Order "deleted" event.
-     *
-     * @param  \App\Models\Order  $order
-     * @return void
-     */
-    public function deleted(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Handle the Order "restored" event.
-     *
-     * @param  \App\Models\Order  $order
-     * @return void
-     */
-    public function restored(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Handle the Order "force deleted" event.
-     *
-     * @param  \App\Models\Order  $order
-     * @return void
-     */
-    public function forceDeleted(Order $order)
-    {
-        //
+        try {
+            $order->payee->notify(new ReceivedTransfer($order));
+        } catch (\Throwable $th) {
+            Log::alert('Error sending transfer notification: '. $th->getMessage());
+        }
     }
 }

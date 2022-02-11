@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\UserType;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
+    const AUTHORIZED_TRANSACTION = 'Autorizado';
     private UserRepositoryInterface $userRepository;
     private OrderRepositoryInterface $orderRepository;
 
@@ -19,36 +22,13 @@ class OrderService
 
     }
 
-    public static function newOrder($data)
+    public function newOrder($data)
     {
-        try {
-            $hasBalance = app(OrderService::class)->checkBalance($data['payer'], $data['amount']);
-            $noFraud = app(OrderService::class)->checkFraud();
+        $this->checkUserType($data['payer']);
+        $this->checkBalance($data['payer'], $data['amount']);
+        $this->checkFraud();
 
-            if ($hasBalance && $noFraud) {
-                app(OrderService::class)->saveOrder($data);
-
-                return response()->json(
-                        [
-                            'success' => true,
-                            'message' => 'Transfer performed successfully!'
-                        ], 200);
-            }
-
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => !$hasBalance ? 'Transaction authorized insufficient balance!' : 'Transaction authorized'
-                ], 401);
-
-        } catch (\Throwable $th) {
-            Log::alert('Fail to create new order: '. $th->getMessage());
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => 'Transaction failed, please try again later!'
-                ], 500);
-        }
+        return $this->saveOrder($data);
 
     }
 
@@ -56,11 +36,11 @@ class OrderService
     {
         $user = $this->userRepository->getById($payer);
 
-        if ($user->wallet->amount > $amount) {
+        if ($user->wallet->amount >= $amount) {
             return true;
         }
 
-        return false;
+        abort(401, 'Transaction authorized insufficient balance!');
     }
 
     public function saveOrder($data)
@@ -72,15 +52,27 @@ class OrderService
     public function checkFraud()
     {
         try {
-            $response = Http::get('https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6');
-            if($response->status() == 200) {
+            $response = Http::acceptJson()->get('https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6');
+            $json = $response->json();
+
+            if($response->status() == 200 && $json['message'] == self::AUTHORIZED_TRANSACTION) {
                 return true;
             }
 
-            return false;
+            abort(401, 'Transaction authorized');
         } catch (\Throwable $th) {
-            Log::alert('Fail connect to Anti Fraud Service: '. $th->getMessage());
-            return false;
+            abort(401, $th->getMessage());
         }
+    }
+
+    public function checkUserType($payer)
+    {
+        $user = $this->userRepository->getById($payer);
+
+        if ($user->user_type_id != UserType::SHOPKEEPERS_TYPE) {
+            return true;
+        }
+
+        abort(401, 'Transaction authorized. You cannot perform this type of transaction!');
     }
 }

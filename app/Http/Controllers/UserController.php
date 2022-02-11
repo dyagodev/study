@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
-use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    private UserRepositoryInterface $userRepository;
+    private $userService;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserService $userService)
     {
-        $this->userRepository = $userRepository;
+        $this->userService = $userService;
     }
 
     /**
@@ -23,14 +23,10 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        $data = $request->all();
+
         try {
-            $this->userRepository->createUser([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'cpf_cnpj' => $request->cpf_cnpj,
-                'user_type_id' => $request->user_type
-            ]);
+            $this->userService->saveUser($data);
 
             return response()->json(
                 [
@@ -39,6 +35,7 @@ class UserController extends Controller
                 ], 200);
 
         } catch (\Throwable $th) {
+            Log::alert('User registration failure: '. $th->getMessage());
             return response()->json(
                 [
                     'success' => false,

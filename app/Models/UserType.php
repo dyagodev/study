@@ -9,8 +9,8 @@ class UserType extends Model
 {
     use HasFactory;
 
-    const commonType = 1;
-    const shopkeepersType = 2;
+    const COMMON_TYPE = 1;
+    const SHOPKEEPERS_TYPE = 2;
 
     protected $fillable = [
         'name',

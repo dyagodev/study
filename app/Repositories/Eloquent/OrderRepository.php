@@ -14,7 +14,7 @@ class OrderRepository implements OrderRepositoryInterface
             'amount'        => $data['amount'],
             'payer_id'      => $data['payer'],
             'receiver_id'   => $data['payee'],
-            'status'        => Order::done
+            'status'        => Order::DONE
         ]);
     }
 }
