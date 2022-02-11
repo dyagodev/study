@@ -26,7 +26,7 @@ E, claro, o próprio StudyAPI é de código aberto com um repositório público.
 
 ## Installation
 
-Study API Requer [Docker](https://www.docker.com/) and [Docker-compose](https://docs.docker.com/compose/install/) para rodar.
+Study API Requer [Docker](https://www.docker.com/) e [Docker-compose](https://docs.docker.com/compose/install/) para rodar.
 
 Instale as dependências e devDependencies e inicie o servidor.
 
